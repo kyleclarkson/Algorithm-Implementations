@@ -53,5 +53,92 @@ public class BuySellDays {
         return result;
     }
 
+    /**
+     * A Divide-and-conquer based solution. Based on the following observation:
+     *      Define a window (x,y) as in interval of some length. Given an interval of length
+     *      k, partition this into two intervals each of length k/2. Observe the structure of
+     *      the optimal window O=(x',y'):
+     *          either O lies in the first or last interval,
+     *          or O spans between the both, with the buy day in the former and the
+     *              sell day in the latter.
+     * Analysis of the algorithm (Master's Theorem) yields a O(nlogn) runtime.
+     * @return An int 1x2 array. First and second values indicating indices to buy and sell.
+     */
+    public int[] DNC(int leftIndex, int rightIndex) {
+        int[] result = new int[2];
+        // TODO right out using window size as parameter.
 
+        // Base case, window size is one
+        if (rightIndex - leftIndex <= 1) {
+            return new int[] {leftIndex, rightIndex};
+        }
+        // Inductive case
+        else {
+            int midpoint = (rightIndex + leftIndex) / 2;
+//            System.out.println("midpoint: "+midpoint);
+            // Search for optimal solution in left, right windows.
+            int[] leftSol = DNC(leftIndex, midpoint);
+            int[] rightSol = DNC(midpoint + 1, rightIndex);
+
+            // Search for optimal window across midpoint.
+            int indexBuy = getMinIndex(prices, leftIndex, midpoint);
+            int indexSell = getMaxIndex(prices, midpoint+1, rightIndex);
+
+            // Return indices correspond to max of three cases:
+            double[] maxValues = new double[] {
+                    prices[leftSol[1]] - prices[leftSol[0]],
+                    prices[rightSol[1]] - prices[rightSol[0]],
+                    prices[indexBuy] - prices[indexSell]
+            };
+
+            switch (getMaxIndex(maxValues,0, 2)) {
+                case 0:
+                    return leftSol;
+                case 1:
+                    return rightSol;
+                case 2:
+                    return new int[] {indexBuy, indexSell};
+            }
+        }
+
+
+        return result;
+    }
+
+    /**
+     * Get index of min value in array.
+     * @param array         - Array to search over
+     * @param startIndex    - Starting index (inclusive)
+     * @param endIndex      - Ending index (exclusive)
+     * @return              - Index of min value in array.
+     */
+    private int getMinIndex(double[] array, int startIndex, int endIndex) {
+        double minValue = Double.POSITIVE_INFINITY;
+        int index = startIndex;
+        for (int i=startIndex; i<endIndex; i++) {
+            if (array[i] < minValue) {
+                index = i;
+                minValue = array[i];
+            }
+        }
+        return index;
+    }
+    /**
+     * Get index of max value in array.
+     * @param array         - Array to search over
+     * @param startIndex    - Starting index (inclusive)
+     * @param endIndex      - Ending index (exclusive)
+     * @return              - Index of max value in array.
+     */
+    private int getMaxIndex(double[] array, int startIndex, int endIndex) {
+        double maxValue = Double.NEGATIVE_INFINITY;
+        int index = startIndex;
+        for (int i=startIndex; i<endIndex; i++) {
+            if (array[i] > maxValue) {
+                index = i;
+                maxValue = array[i];
+            }
+        }
+        return index;
+    }
 }
