@@ -104,6 +104,10 @@ public class BuySellDays {
         return new int[]{-1,-1};
     }
 
+    public int[] DNC() {
+        return DNC(0, prices.length-1);
+    }
+
     /**
      * A DP based solution. Based on the following observation tracking the max revenue of selling on
      * day i as dpArray[j].
