@@ -1,5 +1,7 @@
 package BuySellDays;
 
+import java.util.Arrays;
+
 /**
  *  The Buy-Sell-Days is:
  *      Given a stock's price over an n day period, on what day should an individual buy and sell
@@ -26,6 +28,8 @@ public class BuySellDays {
     public void setPrices(double[] prices) {
         this.prices = prices;
     }
+
+    public double[] getPrices() {return this.prices;}
 
     /**
      * A Naive implementation that tries each day to buy, then each day after to sell.
@@ -65,16 +69,13 @@ public class BuySellDays {
      * @return An int 1x2 array. First and second values indicating indices to buy and sell.
      */
     public int[] DNC(int leftIndex, int rightIndex) {
-        int[] result = new int[2];
-        // TODO right out using window size as parameter.
-
         // Base case, window size is one
         if (rightIndex - leftIndex <= 1) {
             return new int[] {leftIndex, rightIndex};
         }
         // Inductive case
         else {
-            int midpoint = (rightIndex + leftIndex) / 2;
+            int midpoint = (rightIndex + leftIndex + 1) / 2;
 //            System.out.println("midpoint: "+midpoint);
             // Search for optimal solution in left, right windows.
             int[] leftSol = DNC(leftIndex, midpoint);
@@ -82,28 +83,94 @@ public class BuySellDays {
 
             // Search for optimal window across midpoint.
             int indexBuy = getMinIndex(prices, leftIndex, midpoint);
-            int indexSell = getMaxIndex(prices, midpoint+1, rightIndex);
+            int indexSell = getMaxIndex(prices, midpoint, rightIndex);
 
             // Return indices correspond to max of three cases:
-            double[] maxValues = new double[] {
+            double[] maxValues = new double[]{
                     prices[leftSol[1]] - prices[leftSol[0]],
                     prices[rightSol[1]] - prices[rightSol[0]],
-                    prices[indexBuy] - prices[indexSell]
+                    prices[indexSell] - prices[indexBuy]
             };
 
-            switch (getMaxIndex(maxValues,0, 2)) {
+            switch (getMaxIndex(maxValues, 0, 3)) {
                 case 0:
                     return leftSol;
                 case 1:
                     return rightSol;
                 case 2:
-                    return new int[] {indexBuy, indexSell};
+                    return new int[]{indexBuy, indexSell};
             }
         }
-
-
-        return result;
+        return new int[]{-1,-1};
     }
+
+    /**
+     * A DP based solution. Based on the following observation tracking the max revenue of selling on
+     * day i as dpArray[j].
+     *      On day i,
+     *          if individual has already sold stock, revenue is 0.
+     *          else, selling on day j revenue is: dpArray[i-1] - prices[i-1] + prices[i].
+     *      Thus,
+     *          dpArray[i] = max {0, dpArray[i-1] - prices[i-1] + prices[i]}
+     * The optimal value is then found by maximizing over dpArray.
+     *
+     * Maintain optimal days to buy and sell for backtracking.
+     * @return The maximum revenue value.
+     */
+    public double DPValue() {
+        // dpArray[i] stores revenue that will be made if sold on day i.
+        double[] dpArray = new double[prices.length];
+        dpArray[0] = 0;
+        // Compute recurrence values.
+        for (int i=1; i < prices.length; i++) {
+            if (dpArray[i-1] - prices[i-1] + prices[i] < 0) {
+                // Selling on this day, given previous best day to buy on, yields negative revenue.
+                dpArray[i] = 0;
+            } else {
+                // Selling on this day, given previous best day to buy on, yields positive revenue.
+                dpArray[i] = dpArray[i-1] - prices[i-1] + prices[i];
+            }
+        }
+        return dpArray[getMaxIndex(dpArray, 0, dpArray.length)];
+    }
+
+    /**
+     * A DP based solution. Based on the following observation tracking the max revenue of selling on
+     * day i as dpArray[j].
+     *      On day i,
+     *          if individual has already sold stock, revenue is 0.
+     *          else, selling on day j revenue is: dpArray[i-1] - prices[i-1] + prices[i].
+     *      Thus,
+     *          dpArray[i] = max {0, dpArray[i-1] - prices[i-1] + prices[i]}
+     * The optimal value is then found by maximizing over dpArray.
+     *
+     * Maintain optimal days to buy and sell for backtracking.
+     * @return An int 1x2 array. First and second values indicating indices to buy and sell.
+     */
+    public int[] DP() {
+        // dpArray[i] stores revenue that will be made if sold on day i.
+        double[] dpArray = new double[prices.length];
+        int dayToBuyOn, dayToSellOn = 0;
+        dpArray[0] = 0;
+        int bestDayBuyOn = 0;
+        // Compute recurrence values.
+        for (int i=1; i < prices.length; i++) {
+            if (dpArray[i-1] - prices[i-1] + prices[i] < 0) {
+                // Selling on this day, given previous best day to buy on, yields negative revenue.
+                dpArray[i] = 0;
+            } else {
+                // Selling on this day, given previous best day to buy on, yields positive revenue.
+                dpArray[i] = dpArray[i-1] - prices[i-1] + prices[i];
+            }
+        }
+        dayToSellOn = getMaxIndex(dpArray, 0, dpArray.length);
+        dayToBuyOn = dayToSellOn;
+        while(dpArray[dayToBuyOn] != 0) {
+            dayToBuyOn -= 1;
+        }
+        return new int[]{dayToBuyOn, dayToSellOn};
+    }
+
 
     /**
      * Get index of min value in array.
