@@ -53,9 +53,10 @@ public class Runtimes {
         for (int k=0; k<3; k++) {
             System.out.println("K="+k);
             for (int i=0; i<TEST_SIZES.length; i++) {
-                System.out.println("Test size: " + TEST_SIZES[i]);
+                System.out.println("Running test size: " + TEST_SIZES[i] +" ... ");
                 testResults[k][i] = new ArrayList<>();
                 for (int j=0; j<NUM_OF_TESTS; j++) {
+                    System.out.println("test number: "+j);
                     for (int l=0; l<testData[i][j].size(); l++) {
                         double[] prices = testData[i][j].get(l);
                         bsd.setPrices(prices);
