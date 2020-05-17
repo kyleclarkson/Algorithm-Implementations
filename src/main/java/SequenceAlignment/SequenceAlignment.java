@@ -1,5 +1,8 @@
 package SequenceAlignment;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  *  SequenceAlignment is:
  *      Given two strings X and Y of m and n characters over an alphabet,
@@ -23,5 +26,52 @@ package SequenceAlignment;
  */
 public class SequenceAlignment {
 
-    // TODO. Get strings X,Y, and cost matrix for alphabeta matching.
+    // Map alphabet characters to indices of cost matrix.
+    // For N length alphabet, each unique character is mapped to a unique value
+    // in 0:N-1.
+    private HashMap<Character, Integer> alphabetMap;
+    // The cost matrix for matching characters with one another.
+    // For an N length alphabet, the cost matrix has size NxN.
+    double[][] costMatrix;
+    String X,Y;
+
+    // The matrix that contains the recursive DP values. Using a bottom-up
+    // approach we populate the matrix from [0,0] to [M,N]
+    double[][] dpMatrix;
+
+    public SequenceAlignment(String X, String Y) {
+        this.X = X;
+        this.Y = Y;
+
+        dpMatrix = new double[X.length()][Y.length()];
+    }
+
+    /**
+     * Create a mapping from alphabet characters to indices of cost matrix.
+     * @param alphabet Contains a list of all characters in alphabet.
+     *                 The order of character will need to match how the
+     *                 cost matrix is initialized.
+     */
+    public void setAlphabetMap (List<Character> alphabet) {
+        int alphabetSize = alphabet.size();
+        alphabetMap = new HashMap<>(alphabetSize);
+        for (int i=0; i< alphabetSize; i++) {
+            alphabetMap.put(alphabet.get(i), i);
+        }
+    }
+
+    public void setCostMatrix(double[][] costMatrix) {
+        this.costMatrix = costMatrix;
+    }
+
+    /**
+     * Populate the values of the dpMatrix using the recurrence.
+     */
+    public void computeAlignment() {
+        for(int i=0; i<X.length(); i++) {
+            for (int j=0; j< Y.length(); j++) {
+                // The three cases:
+            }
+        }
+    }
 }
