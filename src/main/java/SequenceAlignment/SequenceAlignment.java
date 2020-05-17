@@ -33,6 +33,9 @@ public class SequenceAlignment {
     // The cost matrix for matching characters with one another.
     // For an N length alphabet, the cost matrix has size NxN.
     double[][] costMatrix;
+    // delta: The cost for aligning a character with no character of the alphabet.
+    double unmatchedCost;
+
     String X,Y;
 
     // The matrix that contains the recursive DP values. Using a bottom-up
@@ -60,8 +63,9 @@ public class SequenceAlignment {
         }
     }
 
-    public void setCostMatrix(double[][] costMatrix) {
+    public void setCostMatrix(double[][] costMatrix, double delta) {
         this.costMatrix = costMatrix;
+        this.unmatchedCost = delta;
     }
 
     /**
@@ -71,7 +75,42 @@ public class SequenceAlignment {
         for(int i=0; i<X.length(); i++) {
             for (int j=0; j< Y.length(); j++) {
                 // The three cases:
+                // 1) Match i and j:
+                double case1 = getMatchCost(i, j) + dpMatrixHelper(i-1, j-1);
+
+                // 2) Leave i unmatched.
+                double case2 = dpMatrixHelper(i-1, j);
+
+                // 3) Leave j unmatched.
+                double case3 = dpMatrixHelper(i, j-1);
             }
+        }
+    }
+
+    private double getMatchCost(int i, int j) {
+        char x_i = X.charAt(i);
+        char y_j = Y.charAt(j);
+        return costMatrix[alphabetMap.get(x_i)][alphabetMap.get(y_j)];
+    }
+
+    /**
+     * Handles index out of bounds errors. If i is less than 0, the substring of
+     * X is empty; it is being matched against (j+1) remaining characters in the
+     * substring of Y.
+     * @return The cost associated indices i,j.
+     */
+    private double dpMatrixHelper(int i, int j) {
+        if (i < 0) {
+            //TODO remove debug prints
+            System.out.println("i<0");
+            return (j+1) * unmatchedCost;
+        }
+        else if (j < 0){
+            System.out.println("j<0");
+            return (i+1) * unmatchedCost;
+        }
+        else {
+            return dpMatrix[i][j];
         }
     }
 }
