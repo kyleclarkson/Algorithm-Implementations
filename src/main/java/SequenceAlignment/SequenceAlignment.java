@@ -63,9 +63,9 @@ public class SequenceAlignment {
         }
     }
 
-    public void setCostMatrix(double[][] costMatrix, double delta) {
+    public void setCostMatrix(double[][] costMatrix, double unmatchedCost) {
         this.costMatrix = costMatrix;
-        this.unmatchedCost = delta;
+        this.unmatchedCost = unmatchedCost;
     }
 
     /**
@@ -79,10 +79,13 @@ public class SequenceAlignment {
                 double case1 = getMatchCost(i, j) + dpMatrixHelper(i-1, j-1);
 
                 // 2) Leave i unmatched.
-                double case2 = dpMatrixHelper(i-1, j);
+                double case2 = unmatchedCost + dpMatrixHelper(i-1, j);
 
                 // 3) Leave j unmatched.
-                double case3 = dpMatrixHelper(i, j-1);
+                double case3 = unmatchedCost + dpMatrixHelper(i, j-1);
+
+                // Set min cost as minimum of the three cases.
+                dpMatrix[i][j] = Math.min(case1, Math.min(case2, case3));
             }
         }
     }
@@ -101,12 +104,9 @@ public class SequenceAlignment {
      */
     private double dpMatrixHelper(int i, int j) {
         if (i < 0) {
-            //TODO remove debug prints
-            System.out.println("i<0");
             return (j+1) * unmatchedCost;
         }
         else if (j < 0){
-            System.out.println("j<0");
             return (i+1) * unmatchedCost;
         }
         else {
