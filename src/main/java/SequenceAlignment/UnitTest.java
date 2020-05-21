@@ -22,7 +22,7 @@ public class UnitTest {
         ));
 
         // Set cost matrix
-        double[][] costMatrix = {
+        float[][] costMatrix = {
                 {0,2,2,2},
                 {2,0,2,2},
                 {2,2,0,2},
@@ -50,7 +50,7 @@ public class UnitTest {
         ));
 
         // Set cost matrix
-        double[][] costMatrix = {
+        float[][] costMatrix = {
                 {0,100,100,100,100,100},
                 {100,0,100,100,100,100},
                 {100,100,0,100,100,100},
@@ -62,7 +62,33 @@ public class UnitTest {
         seqAli.setCostMatrix(costMatrix, unMatchedCost);
 
         seqAli.computeAlignment();
-        Assert.assertEquals(6*unMatchedCost, seqAli.dpMatrix[X.length()-1][Y.length()-1], 0.001);
+        System.out.println(seqAli.getAlignment(X.length(),Y.length()));
+        Assert.assertEquals(4*unMatchedCost, seqAli.dpMatrix[X.length()-1][Y.length()-1], 0.001);
     }
-    // TODO create helper method that generates 'default' cost matrix for an alphabet.
+
+    @Test
+    public void Test3() {
+        String X = "mean";
+        String Y = "name";
+
+        SequenceAlignment seqAli = new SequenceAlignment(X, Y);
+        // Set alphabet
+        seqAli.setAlphabetMap(new ArrayList<Character>(
+                Arrays.asList('a','e','m','n')
+        ));
+
+        float[][] costMatrix = {
+                {0,1,3,3},
+                {1,0,3,3},
+                {3,3,0,1},
+                {3,3,1,0}
+        };
+        double unMatchedCost = 2;
+        seqAli.setCostMatrix(costMatrix, unMatchedCost);
+
+        seqAli.computeAlignment();
+        System.out.println(Arrays.deepToString(seqAli.dpMatrix));
+        System.out.println(seqAli.getAlignment(X.length(), Y.length()));
+    }
+
 }
