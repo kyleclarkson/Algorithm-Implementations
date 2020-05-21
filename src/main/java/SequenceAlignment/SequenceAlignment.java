@@ -42,11 +42,20 @@ public class SequenceAlignment {
     // approach we populate the matrix from [0,0] to [M,N]
     double[][] dpMatrix;
 
+    // A matrix which tracks how values of dpMatrix are set.
+    BacktrackIndices[][] backtrackIndices;
+
     public SequenceAlignment(String X, String Y) {
         this.X = X;
         this.Y = Y;
 
         dpMatrix = new double[X.length()][Y.length()];
+        backtrackIndices = new BacktrackIndices[X.length()+1][Y.length()+1];
+        for(int i=0; i<X.length()+1; i++) {
+            for(int j=0; j<Y.length()+1; j++) {
+                backtrackIndices[i][j] = new BacktrackIndices();
+            }
+        }
     }
 
     /**
@@ -73,27 +82,81 @@ public class SequenceAlignment {
      */
     public void computeAlignment() {
         for(int i=0; i<X.length(); i++) {
-            for (int j=0; j< Y.length(); j++) {
+            for (int j=0; j<Y.length(); j++) {
                 // The three cases:
                 // 1) Match i and j:
                 double case1 = getMatchCost(i, j) + dpMatrixHelper(i-1, j-1);
 
                 // 2) Leave i unmatched.
-                double case2 = unmatchedCost + dpMatrixHelper(i-1, j);
+                double case2 = getMatchCost(i, j) + dpMatrixHelper(i-1, j);
 
                 // 3) Leave j unmatched.
-                double case3 = unmatchedCost + dpMatrixHelper(i, j-1);
+                double case3 = getMatchCost(i, j) + dpMatrixHelper(i, j-1);
 
                 // Set min cost as minimum of the three cases.
                 dpMatrix[i][j] = Math.min(case1, Math.min(case2, case3));
+
+                // Set indices for backtracking.
+                if (dpMatrix[i][j] == case1){
+                    backtrackIndices[i][j].setIndices(i-1,j-1);
+                } else if (dpMatrix[i][j] == case2) {
+                    backtrackIndices[i][j].setIndices(i-1, j);
+                } else {
+                    backtrackIndices[i][j].setIndices(i, j-1);
+                }
             }
         }
     }
 
+    /**
+     * Returns the alignment corresponding to dpMatrix[i][j]. String returned is of format:
+     *  X alignment \n
+     *  Y alignment
+     *
+     * where '-' indicates gaps.
+     */
+    public String getAlignment(int i_, int j_) {
+        StringBuilder XBuilder = new StringBuilder();
+        StringBuilder YBuilder = new StringBuilder();
+
+        int i = i_;
+        int j = j_;
+        while (i > 0 || j > 0) {
+            int[] indices = backtrackIndices[i][j].getIndices();
+            // value comes from i-1, j-1
+            if(i-1 == indices[0] && j-1 == indices[1]) {
+                XBuilder.append(X.charAt(i-1));
+                YBuilder.append(Y.charAt(j-1));
+                i--;
+                j--;
+            }
+            // value comes from i-1.
+            else if(i-1 == indices[0] && j == indices[1]) {
+                YBuilder.append("-");
+                XBuilder.append(X.charAt(j-1));
+                i--;
+            }
+            // value comes from j-1
+            else {
+                YBuilder.append(Y.charAt(i-1));
+                XBuilder.append("-");
+                j--;
+            }
+        }
+
+        return XBuilder.reverse().toString() + "\n" + YBuilder.reverse().toString();
+    }
+
     private double getMatchCost(int i, int j) {
-        char x_i = X.charAt(i);
-        char y_j = Y.charAt(j);
-        return costMatrix[alphabetMap.get(x_i)][alphabetMap.get(y_j)];
+        if (i<0){
+            return unmatchedCost;
+        } else if (j < 0 ){
+            return unmatchedCost;
+        } else {
+            char x_i = X.charAt(i);
+            char y_j = Y.charAt(j);
+            return costMatrix[alphabetMap.get(x_i)][alphabetMap.get(y_j)];
+        }
     }
 
     /**
@@ -111,6 +174,28 @@ public class SequenceAlignment {
         }
         else {
             return dpMatrix[i][j];
+        }
+    }
+
+    /**
+     * A helper class for backtracking through the dpMatrix values.
+     * For each entry of dpMatrix(i,j), this class stores what indices resulted in
+     * the entry value.
+     */
+    class BacktrackIndices {
+
+        int i,j;
+        public BacktrackIndices() {
+
+        }
+
+        public void setIndices(int i, int j){
+            this.i = i;
+            this.j = j;
+        }
+
+        public int[] getIndices(){
+            return new int[]{this.i, this.j};
         }
     }
 }

@@ -23,15 +23,18 @@ public class UnitTest {
 
         // Set cost matrix
         double[][] costMatrix = {
-                {0,1,1,1},
-                {1,0,1,1},
-                {1,1,0,1},
-                {1,1,1,0}
+                {0,2,2,2},
+                {2,0,2,2},
+                {2,2,0,2},
+                {2,2,2,0}
         };
-        double unMatchedCost = 0.5;
+        double unMatchedCost = 1;
         seqAli.setCostMatrix(costMatrix, unMatchedCost);
 
         seqAli.computeAlignment();
+
+        System.out.println(Arrays.deepToString(seqAli.dpMatrix));
+        System.out.println(seqAli.getAlignment(X.length(), Y.length()));
         Assert.assertEquals(unMatchedCost, seqAli.dpMatrix[X.length()-1][Y.length()-1], 0.001);
     }
     @Test
@@ -61,5 +64,5 @@ public class UnitTest {
         seqAli.computeAlignment();
         Assert.assertEquals(6*unMatchedCost, seqAli.dpMatrix[X.length()-1][Y.length()-1], 0.001);
     }
-    // TODO create helper method that generates 'default' cost matrix for an alphabet. 
+    // TODO create helper method that generates 'default' cost matrix for an alphabet.
 }
