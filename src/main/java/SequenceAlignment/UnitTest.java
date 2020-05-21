@@ -89,6 +89,32 @@ public class UnitTest {
         seqAli.computeAlignment();
         System.out.println(Arrays.deepToString(seqAli.dpMatrix));
         System.out.println(seqAli.getAlignment(X.length(), Y.length()));
+        Assert.assertEquals(6, seqAli.dpMatrix[X.length()][Y.length()],0.001);
     }
 
+    @Test
+    public void Test4(){
+        String X = "mean";
+        String Y = "name";
+
+        SequenceAlignmentLinearSpace seqAli = new SequenceAlignmentLinearSpace(X, Y);
+        // Set alphabet
+        seqAli.setAlphabetMap(new ArrayList<Character>(
+                Arrays.asList('a','e','m','n')
+        ));
+
+        float[][] costMatrix = {
+                {0,1,3,3},
+                {1,0,3,3},
+                {3,3,0,1},
+                {3,3,1,0}
+        };
+        double unMatchedCost = 2;
+
+        seqAli.setCostMatrix(costMatrix, unMatchedCost);
+
+        seqAli.computeAlignment();
+        System.out.println(Arrays.deepToString(seqAli.dpMatrix));
+        Assert.assertEquals(6, seqAli.dpMatrix[X.length()][1],0.001);
+    }
 }

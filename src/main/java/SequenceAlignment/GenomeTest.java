@@ -31,11 +31,12 @@ public class GenomeTest {
     public void Test1() {
         double expectedValue = 10869;
 
-        SequenceAlignment seqAli = new SequenceAlignment(CoV, CoV_2);
+        SequenceAlignmentLinearSpace seqAli = new SequenceAlignmentLinearSpace(CoV, CoV_2);
+        seqAli.setAlphabetMap(alphabet);
         seqAli.setCostMatrix(defaultCostMatrix, 3);
 
         seqAli.computeAlignment();
-        Assert.assertEquals(expectedValue, seqAli.dpMatrix[CoV.length()][CoV_2.length()], 0.0001);
+        Assert.assertEquals(expectedValue, seqAli.getOptimalAlignmentCost(), 0.0001);
     }
 
     /**
