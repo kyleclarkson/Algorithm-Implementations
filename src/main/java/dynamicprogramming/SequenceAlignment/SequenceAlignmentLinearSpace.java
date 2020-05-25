@@ -1,4 +1,4 @@
-package SequenceAlignment;
+package dynamicprogramming.SequenceAlignment;
 
 
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * SequenceAlignmentLinearSpace:
- *      An improvement on the SequenceAlignment, where only linear space
+ *      An improvement on the dynamicprogramming.SequenceAlignment, where only linear space
  *      (in terms of the lengths of the two strings) is needed.
  *
  *      The improvement is possible by observing only two columns (assuming number

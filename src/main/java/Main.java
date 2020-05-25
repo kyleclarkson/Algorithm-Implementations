@@ -1,6 +1,5 @@
-import BuySellDays.BuySellDays;
+import dynamicprogramming.BuySellDays.BuySellDays;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class Main {

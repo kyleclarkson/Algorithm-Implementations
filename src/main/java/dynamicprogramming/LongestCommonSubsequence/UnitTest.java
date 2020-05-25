@@ -1,4 +1,4 @@
-package LongestCommonSubsequence;
+package dynamicprogramming.LongestCommonSubsequence;
 
 import org.junit.Assert;
 import org.junit.Test;

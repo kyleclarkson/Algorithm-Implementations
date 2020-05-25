@@ -1,4 +1,4 @@
-package BuySellDays;
+package dynamicprogramming.BuySellDays;
 
 import java.io.File;
 import java.io.FileNotFoundException;

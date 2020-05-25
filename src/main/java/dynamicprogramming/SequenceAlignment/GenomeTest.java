@@ -1,4 +1,4 @@
-package SequenceAlignment;
+package dynamicprogramming.SequenceAlignment;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,6 +1,4 @@
-package BuySellDays;
-
-import java.util.Arrays;
+package dynamicprogramming.BuySellDays;
 
 /**
  *  The Buy-Sell-Days is:

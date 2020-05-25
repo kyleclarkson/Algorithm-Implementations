@@ -1,10 +1,10 @@
-package SequenceAlignment;
+package dynamicprogramming.SequenceAlignment;
 
 import java.util.HashMap;
 import java.util.List;
 
 /**
- *  SequenceAlignment is:
+ *  dynamicprogramming.SequenceAlignment is:
  *      Given two strings X and Y of m and n characters over an alphabet,
  *      and a cost matrix for matching each character to another character
  *      of the alphabet, what is an alignment of X with Y such that the alignment

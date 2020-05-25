@@ -1,4 +1,4 @@
-package LongestCommonSubsequence;
+package dynamicprogramming.LongestCommonSubsequence;
 
 /**
  *  A <i>subsequence</i> of a string X[1:n] is a string of the form x_i_1,x_i_2, ..., x_i_k
