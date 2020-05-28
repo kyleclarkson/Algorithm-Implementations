@@ -52,11 +52,62 @@ public class Sort {
         }
     }
 
+    public static void quickSort(double[] array, int leftIndex, int rightIndex, String pivotMethod) {
+        if (rightIndex - leftIndex <= 1) {
+            return;
+        } else {
+            int pivot = getPivot(array, leftIndex, rightIndex, pivotMethod);
+            double pivotValue = array[pivot-1];
+
+            // Sort values of array such that those less than pivotValue come before it,
+            // and those greater than pivotValue come after it.
+
+            int i = leftIndex;
+
+            for(int j = leftIndex+1; j<rightIndex; j++) {
+                if (array[j] < pivotValue) {
+                    // Swap pivot and array[j]
+                    double temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                    i++;
+                }
+            }
+            double temp = array[i];
+            array[i] = pivotValue;
+            array[rightIndex-1] = temp;
+
+
+            quickSort(array, leftIndex, pivot, pivotMethod);
+            quickSort(array, pivot+1, rightIndex, pivotMethod);
+        }
+    }
+
+
+    /**
+     * Identify pivot point between left and right indices.
+     * @param pivotMethod - The method by which the pivot point is selected.
+     * @return
+     */
+    private static int getPivot(double[] array, int leftIndex, int rightIndex, String pivotMethod) {
+
+        // Use value at left index as pivot
+        if (pivotMethod.equals("left-index")){
+            return leftIndex;
+        } else if (pivotMethod.equals("right-index")) {
+            return rightIndex;
+        }
+        // TODO add other methods for selecting pivot.
+        // Invalid pivot method
+        else {
+            return -1;
+        }
+    }
     /**
      * Merge two arrays by sorting elements.
      * @return The combination of the two input arrays.
      */
-    public static double[] merge(double[] array1, double[] array2) {
+    private static double[] merge(double[] array1, double[] array2) {
         double[] result = new double[array1.length + array2.length];
 
         int index1 = 0, index2 = 0;

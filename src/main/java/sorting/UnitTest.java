@@ -18,4 +18,10 @@ public class UnitTest {
         Sort.mergeSort(array1, 0, array1.length);
         System.out.println(Arrays.toString(array1));
     }
+
+    @Test
+    public void TestQuickSort() {
+        Sort.quickSort(array1, 0, array1.length, "right-index");
+        System.out.println(Arrays.toString(array1));
+    }
 }
