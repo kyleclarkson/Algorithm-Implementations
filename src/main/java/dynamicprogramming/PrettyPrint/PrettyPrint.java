@@ -1,7 +1,5 @@
-package dynamicprogramming.PrettyPrinting;
+package dynamicprogramming.PrettyPrint;
 
-
-import java.util.Arrays;
 
 /**
  * The <i>pretty printing</i> problem asks how should a sequence of text
@@ -28,20 +26,23 @@ import java.util.Arrays;
  * cost(text[j:n]) + OPT(text[1:j-1]) on k-1 lines.
  * where OPT(i) is the optimal cost of the way to partition the words text[1:i].
  */
-public class PrettyPrinting {
+public class PrettyPrint {
 
     final double INF = Double.POSITIVE_INFINITY;
 
     // Store the slack of line text[i:j] inclusive.
     double[][] slack;
+    double dpMatrix[];
     int lineLength;
     String[] text;
 
-    public PrettyPrinting(int lineLength, String[] text) {
+    public PrettyPrint(int lineLength, String[] text) {
         this.lineLength = lineLength;
         this.text = text;
 
         slack = new double[text.length][text.length];
+        dpMatrix = new double[text.length+1];
+        dpMatrix[0] = 0;
     }
 
     public void computeSlackValues() {
@@ -66,6 +67,12 @@ public class PrettyPrinting {
                 }
                 j++;
             }
+        }
+    }
+
+    public void computeOPT(){
+        for(int i=1; i<=text.length; i++) {
+            
         }
     }
 
