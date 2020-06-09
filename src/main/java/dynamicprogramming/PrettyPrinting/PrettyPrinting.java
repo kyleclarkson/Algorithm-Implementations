@@ -45,7 +45,6 @@ public class PrettyPrinting {
     }
 
     public void computeSlackValues() {
-        // Testing github. 
         // Compute cost of each partition
         for (int i = 0; i < text.length; i++) {
             double lengthOfPartition = 0;
