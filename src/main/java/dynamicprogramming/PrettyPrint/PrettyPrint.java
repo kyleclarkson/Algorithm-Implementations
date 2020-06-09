@@ -1,5 +1,8 @@
 package dynamicprogramming.PrettyPrint;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The <i>pretty printing</i> problem asks how should a sequence of text
@@ -33,6 +36,7 @@ public class PrettyPrint {
     // Store the slack of line text[i:j] inclusive.
     double[][] slack;
     double dpMatrix[];
+    int dpMatrixIndices[];
     int lineLength;
     String[] text;
 
@@ -42,7 +46,9 @@ public class PrettyPrint {
 
         slack = new double[text.length][text.length];
         dpMatrix = new double[text.length+1];
+        dpMatrixIndices = new int[text.length+1];
         dpMatrix[0] = 0;
+        dpMatrixIndices[0] = 0;
     }
 
     public void computeSlackValues() {
@@ -72,11 +78,45 @@ public class PrettyPrint {
 
     public void computeOPT(){
         for(int i=1; i<=text.length; i++) {
-            
+            double min = INF;
+            int minIndex = -1;
+            for(int j=0; j<i; j++) {
+                if(slack[i-1][j] + dpMatrix[i-1] < min) {
+                    minIndex = i-1;
+                    min = slack[i-1][j] + dpMatrix[i-1];
+                }
+            }
+            dpMatrix[i] = min;
+            dpMatrixIndices[i] = minIndex;
         }
     }
 
-    public static void main(String[] args) {
+    public static String[] readTextFromFile(String filepath) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(filepath));
 
+            List<String> lines = new ArrayList<String>();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+            reader.close();
+
+            return lines.toArray(new String[lines.size()]);
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        String[] text = PrettyPrint.readTextFromFile("src/main/java/dynamicprogramming/PrettyPrint/test1.txt");
+
+        PrettyPrint pp = new PrettyPrint(20, text);
+
+        pp.computeSlackValues();
+        pp.computeOPT();
+        System.out.println(pp.dpMatrix[text.length]);
     }
 }
