@@ -1,4 +1,4 @@
-import dynamicprogramming.BuySellDays.BuySellDays;
+import dynamicprograming.BuySellDays.BuySellDays;
 
 import java.util.Random;
 
