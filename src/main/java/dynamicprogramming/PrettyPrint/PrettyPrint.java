@@ -52,7 +52,6 @@ public class PrettyPrint {
     }
 
     public void computeSlackValues() {
-        // Test again.
         // Compute cost of each partition
         for (int i = 0; i < text.length; i++) {
             double lengthOfPartition = 0;
@@ -76,6 +75,9 @@ public class PrettyPrint {
         }
     }
 
+    /**
+     * Compute values of dpMatrix.
+     */
     public void computeOPT(){
         for(int i=1; i<=text.length; i++) {
             double min = INF;
