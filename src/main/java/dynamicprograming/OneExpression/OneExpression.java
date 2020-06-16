@@ -164,13 +164,10 @@ public class OneExpression {
     public static void main(String[] args) {
         OneExpression o = new OneExpression();
         // Testing
-        int m = 12;
+        int m = 1000;
 
         o.computeRecurrence(m);
         System.out.println(o.dpMatrix[m]);
-//        o.printMatrixToFile(m+".csv");
         System.out.println(o.computeExpression(m));
-        System.out.println(o.dpMatrix[6]);
-        System.out.println(o.computeExpression(6));
     }
 }
