@@ -1,6 +1,8 @@
 package dynamicprograming.OneExpression;
 
 
+import java.util.Arrays;
+
 /**
  *      One Expression:
  *
@@ -27,20 +29,62 @@ package dynamicprograming.OneExpression;
 public class OneExpression {
 
     // Use array of length m + 1
-    private int[] dpMatrix;
+    int[] dpMatrix;
 
     public OneExpression() {
-        dpMatrix = new int[1];
+        // New arrays are initialized with value 0.
+        dpMatrix = new int[2];
+        dpMatrix[1] = 1;
     }
 
-    public void computeRecurrence(int m) {
-        if (dpMatrix.length > m + 1) {
+    public int computeRecurrence(int m) {
+        if (dpMatrix.length < m + 1) {
             // Create larger array, copy existing values.
             copyArrayValues(m);
         }
 
         // TODO implement algorithm to compute matrix values.
 
+        if (dpMatrix[m] == 0 && m > 0) {
+
+            // Check case where m = x * y
+            int currentMinNumOfOnesMultiplication = m;
+            int multiplicationIndex;
+
+            // iterate over all divisors of m, upto root m.
+            for(int i=2; i<Math.ceil(Math.sqrt(m)); i++) {
+                if (m % i == 0) {
+
+                    int newMinNumOfOnes = computeRecurrence(m / i) + computeRecurrence(i);
+                    if (newMinNumOfOnes < currentMinNumOfOnesMultiplication) {
+                        multiplicationIndex = i;
+                        currentMinNumOfOnesMultiplication = newMinNumOfOnes;
+                    }
+
+                }
+            }
+
+            // Check case where m = x + y
+            int currentMinNumOfOnesAddition = m;
+            int additionIndex;
+
+            // iterate over all subtractions, up to m/2
+            for(int i=1; i<Math.ceil(m / 2.0); i++) {
+                int newMinNumOfOnes = computeRecurrence(m - i) + computeRecurrence(i);
+                if(newMinNumOfOnes < currentMinNumOfOnesAddition) {
+                    additionIndex = i;
+                    currentMinNumOfOnesAddition = newMinNumOfOnes;
+                }
+            }
+
+            // Compare the two cases, storing the min of the two.
+            if(currentMinNumOfOnesMultiplication < currentMinNumOfOnesAddition) {
+                dpMatrix[m] = currentMinNumOfOnesMultiplication;
+            } else {
+                dpMatrix[m] = currentMinNumOfOnesAddition;
+            }
+        }
+        return dpMatrix[m];
     }
 
     // Use values stored in dpMatrix to compute expression for m.
@@ -64,6 +108,9 @@ public class OneExpression {
 
     public static void main(String[] args) {
         OneExpression o = new OneExpression();
-        o.computeRecurrence(1);
+        o.computeRecurrence(50);
+        //Testing
+        System.out.println(o.dpMatrix.length);
+        System.out.println(Arrays.toString(o.dpMatrix));
     }
 }
