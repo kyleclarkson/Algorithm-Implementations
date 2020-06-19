@@ -52,15 +52,22 @@ public class OneExpressionBU extends OneExpression{
         return dpMatrix[m];
     }
 
+    class DPWrapper {
+        // TODO Implement wrapper class - store this class in dpMatrix.
+        // Store dpValue (i.e. min num of ones needed) along with string expression.
+        // Compute both using bottom-up approach at the same time.
+    }
+
+
     public static void main(String[] args) {
         OneExpressionBU obu = new OneExpressionBU();
         OneExpression o = new OneExpression();
 
-        int m = 1_000_000;
+        int m = 219743;
         obu.computeRecurrence(m);
         System.out.println(obu.dpMatrix[m]);
-        obu.printMatrixToFile("1000000.csv");
-        System.out.println("1,000,000: "+ obu.computeExpression(m));
+//        obu.printMatrixToFile("1000000.csv");
+//        System.out.println("1,000,000: "+ obu.computeExpression(m));
         System.out.println("333: " + obu.computeExpression(333));
         System.out.println("51,214: " + obu.computeExpression(51214));
         System.out.println("219,743: " + obu.computeExpression(219743));
