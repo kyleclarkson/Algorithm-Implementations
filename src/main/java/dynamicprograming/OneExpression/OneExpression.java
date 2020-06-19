@@ -152,7 +152,7 @@ public class OneExpression {
         }
     }
 
-    private void copyArrayValues(int m) {
+    protected void copyArrayValues(int m) {
 
         int[] newArray = new int[m+1];
         for (int i=0; i<dpMatrix.length; i++) {
