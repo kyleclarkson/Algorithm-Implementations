@@ -1,6 +1,8 @@
 package dynamicprograming.OneExpression;
 
 
+import java.util.Arrays;
+
 /**
  * A bottom-up approach to the expression of a positive integer using only 1's.
  * See the 'OneExpression.java' file for an explanation of the subproblem structure of the problem.
@@ -12,8 +14,8 @@ public class OneExpressionBU {
     public OneExpressionBU() {
 
         dpMatrix = new DPWrapper[2];
-        dpMatrix[0] = new DPWrapper(0, "");
-        dpMatrix[1] = new DPWrapper(1, "1");
+        dpMatrix[0] = new DPWrapper(0, "", 0);
+        dpMatrix[1] = new DPWrapper(1, "1", 0);
     }
 
     // Use bottom-up approach to build dpMatrix values.
@@ -54,6 +56,11 @@ public class OneExpressionBU {
             // Compare the two cases, storing the min of the two.
             if(currentMinNumOfOnesMultiplication < currentMinNumOfOnesAddition) {
                 dpMatrix[j].setInteger(currentMinNumOfOnesMultiplication);
+                dpMatrix[j].setNumOfOperations(dpMatrix[j / idxCurrentMinNumOfOnesMultiplication].getNumOfOperations()
+                        + dpMatrix[idxCurrentMinNumOfOnesMultiplication].getNumOfOperations()
+                        + 1
+                        );
+
                 String rep = "(".concat(dpMatrix[j / idxCurrentMinNumOfOnesMultiplication].getRepresentation()
                         .concat(")(")
                         .concat(dpMatrix[idxCurrentMinNumOfOnesMultiplication].getRepresentation())
@@ -61,6 +68,11 @@ public class OneExpressionBU {
                 dpMatrix[j].setRepresentation(rep);
             } else {
                 dpMatrix[j].setInteger(currentMinNumOfOnesAddition);
+                dpMatrix[j].setNumOfOperations(
+                        dpMatrix[j - idxCurrentMinNumOfOnesAddition].getNumOfOperations() +
+                                dpMatrix[idxCurrentMinNumOfOnesAddition].getNumOfOperations() +
+                                1
+                );
                 String rep = dpMatrix[j - idxCurrentMinNumOfOnesAddition].getRepresentation()
                         .concat("+")
                         .concat(dpMatrix[idxCurrentMinNumOfOnesAddition].getRepresentation());
@@ -94,12 +106,8 @@ public class OneExpressionBU {
     public static void main(String[] args) {
         OneExpressionBU obu = new OneExpressionBU();
 
-        int m = 1_000_000;
+        int m = 20;
         obu.computeRecurrence(m);
-        System.out.println(obu.dpMatrix[m].getInteger());
-        System.out.println(m+": "+ obu.getRepresentation(m));
-        System.out.println("333: " + obu.getRepresentation(333));
-        System.out.println("51,214: " + obu.getRepresentation(51214));
-        System.out.println("219,743: " + obu.getRepresentation(219743));
+        System.out.println(Arrays.toString(obu.dpMatrix));
     }
 }
