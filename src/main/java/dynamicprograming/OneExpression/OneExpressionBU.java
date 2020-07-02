@@ -32,7 +32,7 @@ public class OneExpressionBU {
             // iterate over all divisors of m, upto root m.
             for(int i=2; i<Math.ceil(Math.sqrt(j)); i++) {
                 if (j % i == 0) {
-                    int newMinNumOfOnes = dpMatrix[j / i].getInteger() + dpMatrix[i].getInteger();
+                    int newMinNumOfOnes = dpMatrix[j / i].getMinNumOfOnes() + dpMatrix[i].getMinNumOfOnes();
                     if (newMinNumOfOnes < currentMinNumOfOnesMultiplication) {
                         currentMinNumOfOnesMultiplication = newMinNumOfOnes;
                         idxCurrentMinNumOfOnesMultiplication = i;
@@ -46,7 +46,7 @@ public class OneExpressionBU {
 
             // iterate over all subtractions, up to m/2
             for(int i=1; i<Math.ceil(j / 2.0); i++) {
-                int newMinNumOfOnes = dpMatrix[j - i].getInteger() + dpMatrix[i].getInteger();
+                int newMinNumOfOnes = dpMatrix[j - i].getMinNumOfOnes() + dpMatrix[i].getMinNumOfOnes();
                 if(newMinNumOfOnes < currentMinNumOfOnesAddition) {
                     currentMinNumOfOnesAddition = newMinNumOfOnes;
                     idxCurrentMinNumOfOnesAddition = i;
@@ -55,7 +55,7 @@ public class OneExpressionBU {
 
             // Compare the two cases, storing the min of the two.
             if(currentMinNumOfOnesMultiplication < currentMinNumOfOnesAddition) {
-                dpMatrix[j].setInteger(currentMinNumOfOnesMultiplication);
+                dpMatrix[j].setMinNumOfOnes(currentMinNumOfOnesMultiplication);
                 dpMatrix[j].setNumOfOperations(dpMatrix[j / idxCurrentMinNumOfOnesMultiplication].getNumOfOperations()
                         + dpMatrix[idxCurrentMinNumOfOnesMultiplication].getNumOfOperations()
                         + 1
@@ -67,7 +67,7 @@ public class OneExpressionBU {
                         .concat(")"));
                 dpMatrix[j].setRepresentation(rep);
             } else {
-                dpMatrix[j].setInteger(currentMinNumOfOnesAddition);
+                dpMatrix[j].setMinNumOfOnes(currentMinNumOfOnesAddition);
                 dpMatrix[j].setNumOfOperations(
                         dpMatrix[j - idxCurrentMinNumOfOnesAddition].getNumOfOperations() +
                                 dpMatrix[idxCurrentMinNumOfOnesAddition].getNumOfOperations() +
@@ -78,8 +78,10 @@ public class OneExpressionBU {
                         .concat(dpMatrix[idxCurrentMinNumOfOnesAddition].getRepresentation());
                 dpMatrix[j].setRepresentation(rep);
             }
+
+            dpMatrix[j].setInteger(j);
         }
-        return dpMatrix[m].getInteger();
+        return dpMatrix[m].getMinNumOfOnes();
     }
 
     public String getRepresentation(int m) {
